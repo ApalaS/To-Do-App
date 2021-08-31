@@ -18,6 +18,17 @@
       <button @click="addTask" class="button is-primary is-light">
         SUBMIT
       </button>
+      <div class="rows">
+        <button @click="sortHigh" class="button is-primary is-light">
+          HIGH PRIORITY
+        </button>
+        <button @click="show = false" class="button is-primary is-light">
+          ALL
+        </button>
+        <button @click="sortLow" class="button is-primary is-light">
+          LOW PRIORITY
+        </button>
+      </div>
     </div>
     {{ editedTask }}
     <div class="taskTable">
@@ -33,7 +44,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(task, index) in tasks" :key="index">
+          <tr v-for="(task, index) in show ? x : tasks" :key="index">
             <td>{{ index + 1 }}</td>
             <td>{{ task.name }}</td>
             <td
@@ -73,6 +84,8 @@
 export default {
   data() {
     return {
+      x: [],
+      show: false,
       taskGiven: "",
       prioritySet: "",
       statusRn: "to-do",
@@ -83,7 +96,7 @@ export default {
   },
   methods: {
     addTask: function() {
-      if (this.taskGiven == '' || this.prioritySet == '') {
+      if (this.taskGiven == "" || this.prioritySet == "") {
         alert("please enter task & priority");
         return;
       }
@@ -98,8 +111,7 @@ export default {
         this.tasks[this.editedTask].priority = this.prioritySet;
         this.editedTask = null;
       }
-      this.taskGiven = '',
-      this.prioritySet = ''
+      (this.taskGiven = ""), (this.prioritySet = "");
     },
     deleteMe: function(index) {
       this.tasks.splice(index, 1); //splice
@@ -110,11 +122,24 @@ export default {
       this.editedTask = index;
     },
     changeStatus: function(index) {
-      let newIndex = this.statuses.indexOf(this.tasks[index].status)+1;
+      let newIndex = this.statuses.indexOf(this.tasks[index].status) + 1;
       if (newIndex > 2) {
         newIndex = 0;
       }
       this.tasks[index].status = this.statuses[newIndex];
+    },
+    sortHigh: function() {
+      this.x = this.tasks.filter(function(el) {
+        return el.priority > 5;
+      });
+      console.log(this.x);
+      this.show = true;
+    },
+    sortLow: function() {
+      this.x = this.tasks.filter(function(el) {
+        return el.priority < 5;
+      });
+      this.show = true;
     },
   },
 };
@@ -139,5 +164,10 @@ input {
 button {
   max-width: 40%;
   margin-bottom: 10px;
+}
+.rows{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 </style>
